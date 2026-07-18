@@ -8,10 +8,58 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=5">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 <body>
+
+  <!-- ============ ÍCONES (sprite próprio — construção geométrica do manual) ============ -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- traço 2px, cantos arredondados — mesma família geométrica do símbolo -->
+      <symbol id="i-calendario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="16" rx="4"/>
+        <path d="M3 10h18M8 3v4M16 3v4"/>
+        <circle cx="12" cy="15.5" r="1.6" fill="currentColor" stroke="none"/>
+      </symbol>
+      <symbol id="i-aura" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.2 5.2l2 2M16.8 16.8l2 2M18.8 5.2l-2 2M7.2 16.8l-2 2"/>
+      </symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 21.5S5 16.2 5 10.3A7 7 0 0 1 19 10.3c0 5.9-7 11.2-7 11.2Z"/>
+        <circle cx="12" cy="10.3" r="2.5"/>
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </symbol>
+      <symbol id="i-raio" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13.2 2 5 13.4h5.6L9.6 22 19 10.4h-5.6L13.2 2Z"/>
+      </symbol>
+      <symbol id="i-faisca" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2l2.1 7.9L22 12l-7.9 2.1L12 22l-2.1-7.9L2 12l7.9-2.1Z"/>
+      </symbol>
+      <symbol id="i-balao" viewBox="0 0 24 24" fill="currentColor">
+        <rect x="2" y="3" width="20" height="14" rx="5"/>
+        <path d="M7 16v6l7-6Z"/>
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 12.5 10 18.5 20 6.5"/>
+      </symbol>
+      <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+        <path d="M6 6l12 12M18 6 6 18"/>
+      </symbol>
+      <symbol id="i-diamante" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2 22 12 12 22 2 12Z"/>
+      </symbol>
+      <symbol id="i-estrela" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2l-6.1 3.4 1.4-6.8L2.2 9.1l6.9-.8L12 2Z"/>
+      </symbol>
+      <symbol id="i-seta" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M3 4l18 8-18 8 4.5-8L3 4Z"/>
+      </symbol>
+    </defs>
+  </svg>
 
   <!-- ============ HEADER ============ -->
   <header class="site-header">
@@ -51,7 +99,7 @@
 
       <div class="nav-cta">
         <a href="download.html" class="btn btn-choque">Baixar o app</a>
-        <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
       </div>
     </div>
   </header>
@@ -78,21 +126,21 @@
           <div class="phone-screen">
             <div class="radar-strip">
               <span class="radar-label">Radar · salas abertas</span>
-              <span class="radar-event">Festa GIRA · sexta · 87</span>
+              <span class="radar-event">Festa · sexta · 87</span>
             </div>
             <div class="card-photo">
-              <div class="card-silhouette"></div>
+              <img class="card-img" src="assets/marina.jpg" alt="" loading="lazy">
               <div class="card-info">
                 <div class="card-name">Marina, 27 · Pinheiros</div>
                 <div class="card-badges">
                   <span class="aura-pill">92</span>
-                  <span class="badge">⚡ responde rápido</span>
-                  <span class="badge">🔥 na cena</span>
+                  <span class="badge"><svg class="ic"><use href="#i-raio"/></svg> responde rápido</span>
+                  <span class="badge"><svg class="ic"><use href="#i-faisca"/></svg> na cena</span>
                 </div>
               </div>
             </div>
             <div class="phone-chat">
-              <div class="chat-context"><span class="star">★</span> Festa GIRA · sexta 22h · vocês dois vão</div>
+              <div class="chat-context"><svg class="ic ic-star"><use href="#i-estrela"/></svg> Festa · sexta 22h · vocês dois vão</div>
               <div class="bubble bubble-in">então você é das que chegam antes do DJ bom ou depois?</div>
               <div class="bubble bubble-out">chego junto com ele. pontualidade de show é caráter</div>
               <div class="bubble bubble-in">concordo. te acho no balcão às 23 então?</div>
@@ -115,17 +163,17 @@
 
       <div class="pillars">
         <article class="pillar reveal">
-          <div class="pillar-icon pi-eletrico">📍</div>
+          <div class="pillar-icon pi-eletrico"><svg aria-hidden="true"><use href="#i-calendario"/></svg></div>
           <h3>Contexto</h3>
           <p>Um evento em comum. Vocês se conhecem pela mesma festa de sexta — assunto pronto, clima de véspera, zero "e aí, tudo bem?".</p>
         </article>
         <article class="pillar reveal">
-          <div class="pillar-icon pi-verde">✦</div>
+          <div class="pillar-icon pi-verde"><svg aria-hidden="true"><use href="#i-aura"/></svg></div>
           <h3>Reputação</h3>
           <p>Aura pública e badges no perfil. Quem conversa bem carrega Aura alta à vista de todos — status que se ganha conversando, não pagando.</p>
         </article>
         <article class="pillar reveal">
-          <div class="pillar-icon pi-choque">🎯</div>
+          <div class="pillar-icon pi-choque"><svg aria-hidden="true"><use href="#i-pin"/></svg></div>
           <h3>Destino</h3>
           <p>Um lugar e uma hora onde o encontro pode acontecer. O evento fica fixado no chat: a conversa serve para chegar lá com clima.</p>
         </article>
@@ -140,13 +188,13 @@
         <span class="section-kicker k-choque">O inimigo</span>
         <h2 class="section-title">Match sem contexto é número perdido</h2>
         <ul class="enemy-list">
-          <li><span class="x">✕</span><span>O <strong>match morto</strong> — o like mútuo que nunca vira nada.</span></li>
-          <li><span class="x">✕</span><span>O ghosting, a coleção de ego e a conversa que morre porque não tem para onde ir.</span></li>
-          <li><span class="v">✓</span><span>No Frenesi, poucas salas, <strong>cheias e com clima</strong> — e todo match com um encontro possível no calendário.</span></li>
+          <li><span class="x"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></span><span>O <strong>match morto</strong> — o like mútuo que nunca vira nada.</span></li>
+          <li><span class="x"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></span><span>O ghosting, a coleção de ego e a conversa que morre porque não tem para onde ir.</span></li>
+          <li><span class="v"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></span><span>No Frenesi, poucas salas, <strong>cheias e com clima</strong> — e todo match com um encontro possível no calendário.</span></li>
         </ul>
       </div>
       <blockquote class="enemy-quote reveal">
-        "Tinder é um mar aberto de estranhos sem assunto; o Frenesi é a festa de sexta
+        "App de relacionamento comum é um mar aberto de estranhos sem assunto; o Frenesi é a festa de sexta
         <span class="q-choque">com as conversas começando na quarta.</span>"
       </blockquote>
     </div>
@@ -191,12 +239,12 @@
         <div class="aura-number">92</div>
         <div class="aura-label">Aura</div>
         <div class="badge-cloud">
-          <span class="badge-lg b-rare">◆ Aura 90+</span>
-          <span class="badge-lg">💬 bom de papo</span>
-          <span class="badge-lg">⚡ responde rápido</span>
-          <span class="badge-lg">🔥 na cena</span>
-          <span class="badge-lg">✓ verificado</span>
-          <span class="badge-lg">➤ puxa assunto</span>
+          <span class="badge-lg b-rare"><svg class="ic"><use href="#i-diamante"/></svg> Aura 90+</span>
+          <span class="badge-lg"><svg class="ic"><use href="#i-balao"/></svg> bom de papo</span>
+          <span class="badge-lg"><svg class="ic"><use href="#i-raio"/></svg> responde rápido</span>
+          <span class="badge-lg"><svg class="ic"><use href="#i-faisca"/></svg> na cena</span>
+          <span class="badge-lg"><svg class="ic"><use href="#i-check"/></svg> verificado</span>
+          <span class="badge-lg"><svg class="ic"><use href="#i-seta"/></svg> puxa assunto</span>
         </div>
       </div>
 
@@ -225,22 +273,28 @@
   <section id="planos">
     <div class="container">
       <span class="section-kicker k-eletrico reveal">Planos</span>
-      <h2 class="section-title reveal">Dor real, solução honesta</h2>
+      <h2 class="section-title reveal">O Frenesi é grátis. E vai continuar sendo.</h2>
       <p class="section-sub reveal">
-        O Frenesi é grátis. Os planos existem para o momento em que aquele match da GIRA está
-        para expirar — nunca para transformar o feed em inventário publicitário.
+        Perfil, salas, match e conversa: o essencial não custa nada. Os planos existem
+        para o momento em que aquele match da festa está para expirar — nunca para
+        transformar o feed em inventário publicitário.
       </p>
+
+      <div class="free-strip reveal">
+        <span class="free-tag">R$ 0</span>
+        <p><strong>Grátis para sempre:</strong> criar perfil, verificar, entrar nas salas, dar match e conversar. Sem cartão, sem período de teste — o app inteiro funciona sem pagar.</p>
+      </div>
 
       <div class="plans">
         <article class="plan reveal">
           <h3>Frenesi+</h3>
           <div class="plan-price">R$ 19,90 <span>/mês</span></div>
           <ul>
-            <li>Chats ilimitados</li>
-            <li>Ver quem te curtiu</li>
-            <li>Prioridade de inbox</li>
-            <li>1 Extensão por mês</li>
-            <li>1 Boost por mês</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Chats ilimitados</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Ver quem te curtiu</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Prioridade de inbox</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>1 Extensão por mês</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>1 Boost por mês</li>
           </ul>
           <a href="download.html" class="btn btn-ghost">Assinar no app</a>
         </article>
@@ -250,10 +304,10 @@
           <h3>Frenesi Max</h3>
           <div class="plan-price">R$ 39,90 <span>/mês</span></div>
           <ul>
-            <li>Tudo do Frenesi+</li>
-            <li>Resposta Garantida (24h)</li>
-            <li>Dashboard do seu perfil</li>
-            <li>1 Boost por semana</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-estrela"/></svg>Tudo do Frenesi+</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-estrela"/></svg>Resposta Garantida (24h)</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-estrela"/></svg>Dashboard do seu perfil</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-estrela"/></svg>1 Boost por semana</li>
           </ul>
           <a href="download.html" class="btn btn-choque">Assinar no app</a>
         </article>
