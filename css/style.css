@@ -100,12 +100,13 @@ img { max-width: 100%; }
 .btn-lg { padding: 18px 40px; font-size: 1.1rem; }
 
 /* ---------- header ---------- */
+/* sem backdrop-filter: causa artefatos de renderização no Chrome mobile
+   (header "duplica" trechos da página) e pesa na GPU */
 .site-header {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: rgba(13, 11, 16, 0.82);
-  backdrop-filter: blur(14px);
+  background: rgba(13, 11, 16, 0.95);
   border-bottom: 1px solid var(--papel-10);
 }
 
@@ -162,24 +163,25 @@ img { max-width: 100%; }
   overflow: hidden;
 }
 
-/* luzes de letreiro — cada neon é uma luz própria, nunca misturadas */
+/* luzes de letreiro — cada neon é uma luz própria, nunca misturadas.
+   radial-gradient no lugar de filter:blur — mesmo visual, sem custo de GPU
+   (blur gigante travava a renderização no celular) */
 .hero::before,
 .hero::after {
   content: "";
   position: absolute;
   border-radius: 50%;
-  filter: blur(130px);
   pointer-events: none;
 }
 .hero::before {
-  width: 560px; height: 560px;
-  background: rgba(255, 62, 181, 0.16);
-  top: -160px; right: -120px;
+  width: 900px; height: 900px;
+  background: radial-gradient(circle, rgba(255, 62, 181, 0.16) 0%, transparent 62%);
+  top: -330px; right: -290px;
 }
 .hero::after {
-  width: 480px; height: 480px;
-  background: rgba(0, 176, 232, 0.13);
-  bottom: -200px; left: -140px;
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(0, 176, 232, 0.13) 0%, transparent 62%);
+  bottom: -360px; left: -300px;
 }
 
 .hero-grid {
@@ -368,6 +370,7 @@ img { max-width: 100%; }
 
 /* ---------- seções ---------- */
 section { padding: 100px 0; }
+section[id] { scroll-margin-top: 72px; }
 
 .section-kicker {
   display: block;
@@ -513,11 +516,10 @@ section { padding: 100px 0; }
 .aura-showcase::before {
   content: "";
   position: absolute;
-  width: 300px; height: 300px;
+  width: 460px; height: 460px;
   border-radius: 50%;
-  background: rgba(46, 204, 128, 0.09);
-  filter: blur(70px);
-  top: -80px; left: 50%;
+  background: radial-gradient(circle, rgba(46, 204, 128, 0.09) 0%, transparent 62%);
+  top: -140px; left: 50%;
   transform: translateX(-50%);
 }
 
@@ -657,10 +659,9 @@ section { padding: 100px 0; }
 .final-cta::before {
   content: "";
   position: absolute;
-  width: 640px; height: 640px;
+  width: 980px; height: 980px;
   border-radius: 50%;
-  background: rgba(255, 62, 181, 0.13);
-  filter: blur(140px);
+  background: radial-gradient(circle, rgba(255, 62, 181, 0.13) 0%, transparent 62%);
   left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -713,18 +714,17 @@ section { padding: 100px 0; }
   content: "";
   position: absolute;
   border-radius: 50%;
-  filter: blur(130px);
   pointer-events: none;
 }
 .download-page::before {
-  width: 500px; height: 500px;
-  background: rgba(255, 62, 181, 0.14);
-  top: -140px; right: -100px;
+  width: 820px; height: 820px;
+  background: radial-gradient(circle, rgba(255, 62, 181, 0.14) 0%, transparent 62%);
+  top: -300px; right: -260px;
 }
 .download-page::after {
-  width: 460px; height: 460px;
-  background: rgba(0, 176, 232, 0.12);
-  bottom: -160px; left: -120px;
+  width: 780px; height: 780px;
+  background: radial-gradient(circle, rgba(0, 176, 232, 0.12) 0%, transparent 62%);
+  bottom: -320px; left: -280px;
 }
 .download-page > * { position: relative; }
 
