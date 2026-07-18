@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frenesi — Match com contexto. Conversa com destino.</title>
+  <meta name="description" content="O Frenesi é o app de relacionamento com reputação social. Todo match nasce com um evento em comum, Aura pública e um lugar e uma hora para acontecer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="container nav">
+      <a href="#" class="logo" aria-label="Frenesi — início">
+        <svg viewBox="0 0 96 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <clipPath id="clip-eletrico">
+              <rect x="2" y="2" width="58" height="42" rx="14"/>
+              <polygon points="12,42 12,60 28,44"/>
+            </clipPath>
+          </defs>
+          <!-- quem chega: balão Elétrico, cauda baixo-esquerda -->
+          <g fill="#00b0e8">
+            <rect x="2" y="2" width="58" height="42" rx="14"/>
+            <polygon points="12,42 12,60 28,44"/>
+          </g>
+          <!-- quem responde: balão Choque, cauda baixo-direita -->
+          <g fill="#ff3eb5">
+            <rect x="36" y="22" width="58" height="42" rx="14"/>
+            <polygon points="84,62 84,80 68,64"/>
+          </g>
+          <!-- a faísca: interseção em Papel, intocável -->
+          <g fill="#fdfdf8" clip-path="url(#clip-eletrico)">
+            <rect x="36" y="22" width="58" height="42" rx="14"/>
+            <polygon points="84,62 84,80 68,64"/>
+          </g>
+        </svg>
+        <span class="logo-word">frenesi</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#aura">Aura</a></li>
+        <li><a href="#planos">Frenesi+</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="download.html" class="btn btn-choque">Baixar o app</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="hero-kicker">App de relacionamento · São Paulo</span>
+        <h1>Match com <span class="hl">contexto</span>. Conversa com <span class="hl-2">destino</span>.</h1>
+        <p class="hero-sub">
+          Aqui o match não cai no limbo: ele tem assunto pronto, prazo natural
+          e um encontro possível já no calendário. A conversa começa antes do primeiro drink.
+        </p>
+        <div class="hero-actions">
+          <a href="download.html" class="btn btn-choque btn-lg">Baixar o app</a>
+          <a href="#como-funciona" class="btn btn-ghost btn-lg">Como funciona</a>
+        </div>
+        <p class="hero-note">Verificação por vídeo, uma vez só. Rosto real, sala de verdade.</p>
+      </div>
+
+      <div class="phone-wrap" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="radar-strip">
+              <span class="radar-label">Radar · salas abertas</span>
+              <span class="radar-event">Festa GIRA · sexta · 87</span>
+            </div>
+            <div class="card-photo">
+              <div class="card-silhouette"></div>
+              <div class="card-info">
+                <div class="card-name">Marina, 27 · Pinheiros</div>
+                <div class="card-badges">
+                  <span class="aura-pill">92</span>
+                  <span class="badge">⚡ responde rápido</span>
+                  <span class="badge">🔥 na cena</span>
+                </div>
+              </div>
+            </div>
+            <div class="phone-chat">
+              <div class="chat-context"><span class="star">★</span> Festa GIRA · sexta 22h · vocês dois vão</div>
+              <div class="bubble bubble-in">então você é das que chegam antes do DJ bom ou depois?</div>
+              <div class="bubble bubble-out">chego junto com ele. pontualidade de show é caráter</div>
+              <div class="bubble bubble-in">concordo. te acho no balcão às 23 então?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PILARES ============ -->
+  <section id="diferencial">
+    <div class="container">
+      <span class="section-kicker k-eletrico reveal">O diferencial</span>
+      <h2 class="section-title reveal">Três coisas que nenhum outro app entrega juntas</h2>
+      <p class="section-sub reveal">
+        Todo match no Frenesi já nasce com contexto, reputação e destino.
+        Não é sobre a festa — é sobre quem você conhece nela.
+      </p>
+
+      <div class="pillars">
+        <article class="pillar reveal">
+          <div class="pillar-icon pi-eletrico">📍</div>
+          <h3>Contexto</h3>
+          <p>Um evento em comum. Vocês se conhecem pela mesma festa de sexta — assunto pronto, clima de véspera, zero "e aí, tudo bem?".</p>
+        </article>
+        <article class="pillar reveal">
+          <div class="pillar-icon pi-verde">✦</div>
+          <h3>Reputação</h3>
+          <p>Aura pública e badges no perfil. Quem conversa bem carrega Aura alta à vista de todos — status que se ganha conversando, não pagando.</p>
+        </article>
+        <article class="pillar reveal">
+          <div class="pillar-icon pi-choque">🎯</div>
+          <h3>Destino</h3>
+          <p>Um lugar e uma hora onde o encontro pode acontecer. O evento fica fixado no chat: a conversa serve para chegar lá com clima.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INIMIGO ============ -->
+  <section class="enemy">
+    <div class="container enemy-grid">
+      <div class="reveal">
+        <span class="section-kicker k-choque">O inimigo</span>
+        <h2 class="section-title">Match sem contexto é número perdido</h2>
+        <ul class="enemy-list">
+          <li><span class="x">✕</span><span>O <strong>match morto</strong> — o like mútuo que nunca vira nada.</span></li>
+          <li><span class="x">✕</span><span>O ghosting, a coleção de ego e a conversa que morre porque não tem para onde ir.</span></li>
+          <li><span class="v">✓</span><span>No Frenesi, poucas salas, <strong>cheias e com clima</strong> — e todo match com um encontro possível no calendário.</span></li>
+        </ul>
+      </div>
+      <blockquote class="enemy-quote reveal">
+        "Tinder é um mar aberto de estranhos sem assunto; o Frenesi é a festa de sexta
+        <span class="q-choque">com as conversas começando na quarta.</span>"
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ============ COMO FUNCIONA ============ -->
+  <section id="como-funciona">
+    <div class="container">
+      <span class="section-kicker k-eletrico reveal">Como funciona</span>
+      <h2 class="section-title reveal">Chega na festa já conhecendo alguém</h2>
+      <p class="section-sub reveal">Do cadastro ao balcão do bar, em quatro passos.</p>
+
+      <div class="steps">
+        <article class="step reveal">
+          <div class="step-num">1</div>
+          <h3>Mostra que você é de verdade</h3>
+          <p>Verificação por vídeo, uma vez só. Sem rosto real, sem sala de evento — a sala é o espaço de confiança do app.</p>
+        </article>
+        <article class="step reveal">
+          <div class="step-num">2</div>
+          <h3>Marca "Eu vou"</h3>
+          <p>Escolhe um evento no Radar. "Eu vou" é intenção, não rastreamento — o app nunca sabe nem mostra quem está fisicamente presente.</p>
+        </article>
+        <article class="step reveal">
+          <div class="step-num">3</div>
+          <h3>Entra na sala</h3>
+          <p>A sala abre 48h antes: um feed só com quem também vai. Cada card carrega o vínculo, a Aura e os badges.</p>
+        </article>
+        <article class="step reveal">
+          <div class="step-num">4</div>
+          <h3>Deu Frenesi!</h3>
+          <p>Match com tag de origem: assunto pronto, prazo natural e um lugar para acontecer. O evento fica fixado no topo do chat.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AURA ============ -->
+  <section id="aura" class="enemy">
+    <div class="container aura-grid">
+      <div class="aura-showcase reveal" aria-hidden="true">
+        <div class="aura-number">92</div>
+        <div class="aura-label">Aura</div>
+        <div class="badge-cloud">
+          <span class="badge-lg b-rare">◆ Aura 90+</span>
+          <span class="badge-lg">💬 bom de papo</span>
+          <span class="badge-lg">⚡ responde rápido</span>
+          <span class="badge-lg">🔥 na cena</span>
+          <span class="badge-lg">✓ verificado</span>
+          <span class="badge-lg">➤ puxa assunto</span>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <span class="section-kicker k-choque">Reputação social</span>
+        <h2 class="section-title">Sua Aura está à vista de todo mundo. Cuida bem dela.</h2>
+        <p class="section-sub">
+          A Aura é o placar social do app: um número de 0 a 100, público, no perfil e no card.
+          Se constrói conversando, se exibe com orgulho. Badges detalham a reputação —
+          você escolhe até 3 para destacar. E tem raridade por design: se todo mundo tem, ninguém tem.
+        </p>
+        <div class="aura-rule">
+          <strong>Regra de ouro:</strong> a Aura alta é celebrada em público; a baixa é trabalhada
+          em privado, com motivo e caminho de volta. Ninguém estreia com número na testa —
+          novos usuários exibem "Novo por aqui" nos primeiros 7 dias.
+        </div>
+        <p class="aura-motto">
+          <span class="m1">Aura se ganha conversando.</span><br>
+          <span class="m2">Se perde sumindo.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PLANOS ============ -->
+  <section id="planos">
+    <div class="container">
+      <span class="section-kicker k-eletrico reveal">Planos</span>
+      <h2 class="section-title reveal">Dor real, solução honesta</h2>
+      <p class="section-sub reveal">
+        O Frenesi é grátis. Os planos existem para o momento em que aquele match da GIRA está
+        para expirar — nunca para transformar o feed em inventário publicitário.
+      </p>
+
+      <div class="plans">
+        <article class="plan reveal">
+          <h3>Frenesi+</h3>
+          <div class="plan-price">R$ 19,90 <span>/mês</span></div>
+          <ul>
+            <li>Chats ilimitados</li>
+            <li>Ver quem te curtiu</li>
+            <li>Prioridade de inbox</li>
+            <li>1 Extensão por mês</li>
+            <li>1 Boost por mês</li>
+          </ul>
+          <a href="download.html" class="btn btn-ghost">Assinar no app</a>
+        </article>
+
+        <article class="plan plan-max reveal">
+          <span class="plan-tag">Mais completo</span>
+          <h3>Frenesi Max</h3>
+          <div class="plan-price">R$ 39,90 <span>/mês</span></div>
+          <ul>
+            <li>Tudo do Frenesi+</li>
+            <li>Resposta Garantida (24h)</li>
+            <li>Dashboard do seu perfil</li>
+            <li>1 Boost por semana</li>
+          </ul>
+          <a href="download.html" class="btn btn-choque">Assinar no app</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="final-cta">
+    <div class="container">
+      <h2 class="reveal">A conversa começa antes do primeiro drink.</h2>
+      <p class="reveal">Seu match de sexta está indo na mesma festa que você.</p>
+      <a href="download.html" class="btn btn-choque btn-lg reveal">Baixar o Frenesi</a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <a href="#" class="logo" aria-label="Frenesi">
+        <svg viewBox="0 0 96 84" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <clipPath id="clip-eletrico-f">
+              <rect x="2" y="2" width="58" height="42" rx="14"/>
+              <polygon points="12,42 12,60 28,44"/>
+            </clipPath>
+          </defs>
+          <g fill="#00b0e8">
+            <rect x="2" y="2" width="58" height="42" rx="14"/>
+            <polygon points="12,42 12,60 28,44"/>
+          </g>
+          <g fill="#ff3eb5">
+            <rect x="36" y="22" width="58" height="42" rx="14"/>
+            <polygon points="84,62 84,80 68,64"/>
+          </g>
+          <g fill="#fdfdf8" clip-path="url(#clip-eletrico-f)">
+            <rect x="36" y="22" width="58" height="42" rx="14"/>
+            <polygon points="84,62 84,80 68,64"/>
+          </g>
+        </svg>
+        <span class="logo-word">frenesi</span>
+      </a>
+      <p class="footer-tagline">match com contexto. conversa com destino. · São Paulo</p>
+      <ul class="footer-links">
+        <li><a href="download.html">Baixar o app</a></li>
+        <li><a href="termos.html">Termos de uso</a></li>
+        <li><a href="#">Privacidade</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    document.documentElement.classList.add('js');
+
+    // menu mobile
+    const toggle = document.getElementById('navToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(a =>
+      a.addEventListener('click', () => links.classList.remove('open'))
+    );
+
+    // reveal on scroll
+    // elementos acima da viewport também contam como vistos,
+    // evitando seções ocultas após saltos de âncora
+    const reveals = Array.from(document.querySelectorAll('.reveal'));
+    function checkReveals() {
+      const limit = window.innerHeight * 0.88;
+      for (const el of reveals) {
+        if (!el.classList.contains('visible') && el.getBoundingClientRect().top < limit) {
+          el.classList.add('visible');
+        }
+      }
+    }
+    window.addEventListener('scroll', checkReveals, { passive: true });
+    window.addEventListener('resize', checkReveals);
+    checkReveals();
+  </script>
+</body>
+</html>
