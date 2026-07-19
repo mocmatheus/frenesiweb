@@ -453,6 +453,17 @@ section[id] { scroll-margin-top: 72px; }
 .mascote-triste { width: 130px; margin-bottom: 8px; }
 .mascote-cta { width: 150px; margin: 0 auto 12px; position: relative; }
 .mascote-download { width: 140px; margin: 28px auto 0; }
+.mascote-vespera { width: 104px; }
+.mascote-dorminhoco { width: 78px; align-self: flex-end; margin-top: 4px; }
+.mascote-404 { width: 170px; margin: 28px auto 0; }
+
+.sala-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+.sala-head .section-kicker { margin-bottom: 0; }
 
 .enemy-quote {
   font-family: var(--font-display);
@@ -602,6 +613,8 @@ section[id] { scroll-margin-top: 72px; }
   margin-top: 32px;
 }
 .mech {
+  display: flex;
+  flex-direction: column;
   background: var(--breu);
   border: 1px solid var(--papel-10);
   border-radius: 14px;
