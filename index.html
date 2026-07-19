@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=6">
+  <link rel="stylesheet" href="css/style.css?v=7">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 </head>
 <body>
@@ -58,6 +58,18 @@
       <symbol id="i-seta" viewBox="0 0 24 24" fill="currentColor">
         <path d="M3 4l18 8-18 8 4.5-8L3 4Z"/>
       </symbol>
+      <symbol id="i-casa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9.5Z"/>
+        <path d="M10 21v-6h4v6"/>
+      </symbol>
+      <symbol id="i-ponto" viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="12" cy="12" r="6"/>
+      </symbol>
+      <symbol id="i-perfil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="5"/>
+        <circle cx="12" cy="10" r="3"/>
+        <path d="M6.5 19c1-2.6 3-4 5.5-4s4.5 1.4 5.5 4"/>
+      </symbol>
     </defs>
   </svg>
 
@@ -94,6 +106,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#como-funciona">Como funciona</a></li>
         <li><a href="#aura">Aura</a></li>
+        <li><a href="#badges">Badges</a></li>
         <li><a href="#planos">Frenesi+</a></li>
       </ul>
 
@@ -205,29 +218,51 @@
     <div class="container">
       <span class="section-kicker k-eletrico reveal">Como funciona</span>
       <h2 class="section-title reveal">Chega na festa já conhecendo alguém</h2>
-      <p class="section-sub reveal">Do cadastro ao balcão do bar, em quatro passos.</p>
+      <p class="section-sub reveal">
+        O Frenesi funciona como um app de relacionamento completo — feed, like, match, chat.
+        A diferença é que cada festa, bar ou show aprovado vira uma <strong>sala temporária</strong>:
+        um feed só com quem também vai. Do cadastro ao balcão, o caminho é esse:
+      </p>
 
       <div class="steps">
         <article class="step reveal">
           <div class="step-num">1</div>
           <h3>Mostra que você é de verdade</h3>
-          <p>Verificação por vídeo, uma vez só. Sem rosto real, sem sala de evento — a sala é o espaço de confiança do app.</p>
+          <p>Verificação por vídeo no cadastro, uma vez só. É ela que abre as portas das salas: sem rosto real, sem sala de evento. Perfil falso não passa da porta — a sala é o espaço de confiança do app.</p>
         </article>
         <article class="step reveal">
           <div class="step-num">2</div>
-          <h3>Marca "Eu vou"</h3>
-          <p>Escolhe um evento no Radar. "Eu vou" é intenção, não rastreamento — o app nunca sabe nem mostra quem está fisicamente presente.</p>
+          <h3>Escolhe o evento e marca "Eu vou"</h3>
+          <p>O Radar mostra as salas da semana, curadas por bairro e data — nada de catálogo infinito. "Eu vou" é intenção, não rastreamento: libera seu acesso à sala e sinaliza seu perfil para quem também vai. Dá para desmarcar quando quiser.</p>
         </article>
         <article class="step reveal">
           <div class="step-num">3</div>
-          <h3>Entra na sala</h3>
-          <p>A sala abre 48h antes: um feed só com quem também vai. Cada card carrega o vínculo, a Aura e os badges.</p>
+          <h3>Entra na sala e conversa antes</h3>
+          <p>A sala abre 48h antes do evento. Cada card mostra o vínculo ("também vai na Festa X"), a Aura e os badges — a pergunta deixa de ser "é bonita?" e vira "vale meu tempo hoje à noite?". No dia, o check-in na porta acende seu selo de presença e te dá prioridade no feed.</p>
         </article>
         <article class="step reveal">
           <div class="step-num">4</div>
           <h3>Deu Frenesi!</h3>
-          <p>Match com tag de origem: assunto pronto, prazo natural e um lugar para acontecer. O evento fica fixado no topo do chat.</p>
+          <p>O match nasce com tag de origem, assunto pronto e prazo natural — o evento fica fixado no topo do chat. Ninguém precisa de frase de efeito quando existe um plano em comum: a conversa serve para chegar lá com clima.</p>
         </article>
+      </div>
+
+      <div class="sala-window">
+        <span class="section-kicker k-choque reveal">A janela da sala</span>
+        <div class="sala-timeline">
+          <article class="sala-slot reveal">
+            <span class="slot-k sk-eletrico">48h antes · a sala abre</span>
+            <p>Quem marcou "Eu vou" se vê no mesmo feed. É o pico do clima de véspera — a conversa de quarta constrói o encontro de sexta.</p>
+          </article>
+          <article class="sala-slot reveal">
+            <span class="slot-k sk-choque">Na noite · check-in</span>
+            <p>QR na porta ou confirmação única de local — nunca rastreamento. Presença confirmada vale mais que intenção: selo aceso e prioridade na sala.</p>
+          </article>
+          <article class="sala-slot reveal">
+            <span class="slot-k sk-verde">24h depois · a sala fecha</span>
+            <p>Conversa ativa migra para o inbox com a memória do evento. Match sem nenhuma mensagem expira — match morto não acumula no Frenesi.</p>
+          </article>
+        </div>
       </div>
     </div>
   </section>
@@ -252,19 +287,120 @@
         <span class="section-kicker k-choque">Reputação social</span>
         <h2 class="section-title">Sua Aura está à vista de todo mundo. Cuida bem dela.</h2>
         <p class="section-sub">
-          A Aura é o placar social do app: um número de 0 a 100, público, no perfil e no card.
-          Se constrói conversando, se exibe com orgulho. Badges detalham a reputação —
-          você escolhe até 3 para destacar. E tem raridade por design: se todo mundo tem, ninguém tem.
+          A Aura é o placar social do Frenesi: um número de 0 a 100, público, no perfil e no card.
+          Não mede beleza nem popularidade — mede como você trata as pessoas. E é uma média móvel
+          dos últimos 7 dias: conta quem você é agora, não quem você foi no ano passado.
         </p>
+
+        <div class="aura-mech">
+          <div class="mech mech-up">
+            <h4>Sobe quando você</h4>
+            <ul>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>responde e mantém a conversa viva</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>puxa assunto primeiro</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>aparece de verdade nos eventos que marcou</li>
+            </ul>
+          </div>
+          <div class="mech mech-down">
+            <h4>Desce quando você</h4>
+            <ul>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>some no meio de uma conversa</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>deixa pendências acumularem</li>
+              <li><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>coleciona matches que nunca viram papo</li>
+            </ul>
+          </div>
+        </div>
+
         <div class="aura-rule">
           <strong>Regra de ouro:</strong> a Aura alta é celebrada em público; a baixa é trabalhada
-          em privado, com motivo e caminho de volta. Ninguém estreia com número na testa —
-          novos usuários exibem "Novo por aqui" nos primeiros 7 dias.
+          em privado, com motivo e caminho de volta — sem tribunal, sem exposição. Ninguém estreia
+          com número na testa: novos usuários exibem "Novo por aqui" nos primeiros 7 dias.
         </div>
         <p class="aura-motto">
           <span class="m1">Aura se ganha conversando.</span><br>
           <span class="m2">Se perde sumindo.</span>
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BADGES ============ -->
+  <section id="badges">
+    <div class="container">
+      <span class="section-kicker k-eletrico reveal">Badges</span>
+      <h2 class="section-title reveal">Reputação em detalhe: os 12 badges</h2>
+      <p class="section-sub reveal">
+        Badges são conquistas públicas — você escolhe até 3 para destacar no seu card,
+        e escolher quais exibir é parte do jogo. Todos são calculados por percentil,
+        não por meta fixa: <strong>se todo mundo tem, ninguém tem.</strong>
+      </p>
+
+      <div class="badges-grid">
+        <article class="badge-cat reveal">
+          <h3 class="bc-eletrico">Confiança</h3>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>
+            <div><strong>Verificado</strong><span>Rosto real, confirmado por vídeo no cadastro. A base de tudo.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg>
+            <div><strong>Presença confirmada</strong><span>Check-ins reais acumulados. Prova que você vai mesmo aos lugares que marca.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-perfil"/></svg>
+            <div><strong>Perfil completo</strong><span>Mídia, bio e curiosidades preenchidas. Perfil pela metade não gera conversa.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-diamante"/></svg>
+            <div><strong>Aura 90+</strong><span>A faixa máxima de reputação. O selo mais raro e mais desejado do app.</span></div>
+          </div>
+        </article>
+
+        <article class="badge-cat reveal">
+          <h3 class="bc-verde">Conversa</h3>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-balao"/></svg>
+            <div><strong>Bom de papo</strong><span>Conversas que rendem de verdade, medidas por percentil entre todos os perfis.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-raio"/></svg>
+            <div><strong>Responde rápido</strong><span>Tempo de resposta mediano abaixo de 1 hora. Muda como os outros te tratam.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-ponto"/></svg>
+            <div><strong>Conversa em dia</strong><span>Zero pendências neste momento. Dinâmico: acende e apaga conforme você responde.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-seta"/></svg>
+            <div><strong>Puxa assunto</strong><span>Você inicia a maioria das suas conversas. Iniciativa vale reputação.</span></div>
+          </div>
+        </article>
+
+        <article class="badge-cat reveal">
+          <h3 class="bc-choque">Evento</h3>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-estrela"/></svg>
+            <div><strong>Vai hoje</strong><span>"Eu vou" no evento de hoje. O badge que cria o clima de véspera dentro da sala.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-faisca"/></svg>
+            <div><strong>Match quente</strong><span>Match feito em sala ativa — vocês dois no mesmo evento, na mesma noite.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-casa"/></svg>
+            <div><strong>Da casa</strong><span>3+ check-ins no mesmo bar ou casa parceira. Território tem dono.</span></div>
+          </div>
+          <div class="badge-item">
+            <svg class="ic" aria-hidden="true"><use href="#i-aura"/></svg>
+            <div><strong>Estreante</strong><span>Primeiro check-in. Todo mundo começa em algum lugar — esse é o seu.</span></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="badges-foot reveal">
+        E badge não vive só na tela: em eventos parceiros ele vira benefício físico —
+        fila prioritária para <strong>Aura 90+</strong>, drink de cortesia para <strong>Da casa</strong>.
+        Status digital que abre porta física é status de verdade.
       </div>
     </div>
   </section>

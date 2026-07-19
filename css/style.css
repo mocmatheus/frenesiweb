@@ -496,6 +496,33 @@ section[id] { scroll-margin-top: 72px; }
 .step h3 { font-size: 1.1rem; margin-bottom: 8px; }
 .step p { font-size: 0.9rem; color: var(--papel-60); }
 
+/* janela da sala (abre 48h antes · check-in · fecha 24h depois) */
+.sala-window { margin-top: 64px; }
+.sala-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 8px;
+}
+.sala-slot {
+  background: var(--breu-2);
+  border: 1px solid var(--papel-10);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+}
+.slot-k {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.sk-eletrico { color: var(--eletrico); }
+.sk-choque { color: var(--choque); }
+.sk-verde { color: var(--aura-verde); }
+.sala-slot p { font-size: 0.92rem; color: var(--papel-60); }
+
 /* ---------- aura ---------- */
 .aura-grid {
   display: grid;
@@ -561,6 +588,43 @@ section[id] { scroll-margin-top: 72px; }
   color: var(--choque);
 }
 
+/* mecânica da Aura — sobe / desce */
+.aura-mech {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 32px;
+}
+.mech {
+  background: var(--breu);
+  border: 1px solid var(--papel-10);
+  border-radius: 14px;
+  padding: 20px 22px;
+}
+.mech h4 {
+  font-family: var(--font-text);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.mech-up { border-color: rgba(46, 204, 128, 0.35); }
+.mech-up h4 { color: var(--aura-verde); }
+.mech-down { border-color: rgba(255, 62, 181, 0.35); }
+.mech-down h4 { color: var(--choque); }
+.mech ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.mech li {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  color: var(--papel-60);
+}
+.mech li .ic { margin-top: 4px; width: 0.85em; height: 0.85em; }
+.mech-up li .ic { color: var(--aura-verde); }
+.mech-down li .ic { color: var(--choque); }
+
 .aura-rule {
   margin-top: 32px;
   padding: 20px 24px;
@@ -580,6 +644,59 @@ section[id] { scroll-margin-top: 72px; }
 }
 .aura-motto .m1 { color: var(--aura-verde); }
 .aura-motto .m2 { color: var(--choque); }
+
+/* ---------- badges ---------- */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+}
+.badge-cat {
+  background: var(--breu-2);
+  border: 1px solid var(--papel-10);
+  border-radius: var(--radius);
+  padding: 30px 28px;
+}
+.badge-cat h3 {
+  font-family: var(--font-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.bc-eletrico { color: var(--eletrico); }
+.bc-verde { color: var(--aura-verde); }
+.bc-choque { color: var(--choque); }
+
+.badge-item {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  padding: 15px 0;
+}
+.badge-item + .badge-item { border-top: 1px solid var(--papel-10); }
+.badge-item .ic { margin-top: 4px; color: var(--papel-60); }
+.badge-item strong {
+  display: block;
+  font-weight: 600;
+  font-size: 0.97rem;
+  margin-bottom: 2px;
+}
+.badge-item span { font-size: 0.86rem; color: var(--papel-60); line-height: 1.5; }
+
+.badges-foot {
+  margin-top: 32px;
+  padding: 20px 24px;
+  border-left: 3px solid var(--choque);
+  background: var(--breu-2);
+  border-radius: 0 14px 14px 0;
+  color: var(--papel-60);
+  font-size: 0.95rem;
+  max-width: 720px;
+}
+.badges-foot strong { color: var(--papel); }
 
 /* ---------- planos ---------- */
 .free-strip {
@@ -869,6 +986,8 @@ html.js .reveal.visible { opacity: 1; transform: none; }
   .phone-wrap { margin-top: 24px; }
   .pillars { grid-template-columns: 1fr; }
   .steps { grid-template-columns: repeat(2, 1fr); }
+  .sala-timeline { grid-template-columns: 1fr; }
+  .badges-grid { grid-template-columns: 1fr; }
   .enemy-grid, .aura-grid { grid-template-columns: 1fr; gap: 44px; }
   .plans { grid-template-columns: minmax(0, 420px); }
 }
@@ -892,5 +1011,6 @@ html.js .reveal.visible { opacity: 1; transform: none; }
   section { padding: 72px 0; }
   .hero { padding: 130px 0 72px; }
   .steps { grid-template-columns: 1fr; }
+  .aura-mech { grid-template-columns: 1fr; }
   .phone { transform: none; width: 290px; }
 }
