@@ -448,6 +448,12 @@ section[id] { scroll-margin-top: 72px; }
   align-items: center;
 }
 
+/* mascote Brasa */
+.mascote { display: block; height: auto; }
+.mascote-triste { width: 130px; margin-bottom: 8px; }
+.mascote-cta { width: 150px; margin: 0 auto 12px; position: relative; }
+.mascote-download { width: 140px; margin: 28px auto 0; }
+
 .enemy-quote {
   font-family: var(--font-display);
   font-weight: 700;
@@ -496,7 +502,7 @@ section[id] { scroll-margin-top: 72px; }
 .step h3 { font-size: 1.1rem; margin-bottom: 8px; }
 .step p { font-size: 0.9rem; color: var(--papel-60); }
 
-/* janela da sala (abre 48h antes · check-in · fecha 24h depois) */
+/* janela da sala (abre 72h antes · evento · fecha 24h depois) */
 .sala-window { margin-top: 64px; }
 .sala-timeline {
   display: grid;
