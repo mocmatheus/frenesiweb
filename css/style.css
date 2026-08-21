@@ -963,6 +963,15 @@ section[id] { scroll-margin-top: 72px; }
   font-size: 1.35rem;
   margin-bottom: 14px;
 }
+/* Subtítulo dentro de seção legal. Só a seção de dados sensíveis usa por
+   ora: ela cobre biometria e atributos de perfil, que são regimes
+   diferentes e precisavam ser separados sem renumerar as 14 seções. */
+.legal-page h3 {
+  font-size: 1.05rem;
+  margin: 26px 0 10px;
+  color: var(--papel);
+}
+.legal-page h3:first-of-type { margin-top: 14px; }
 .legal-page p { color: var(--papel-60); margin-bottom: 14px; }
 .legal-page ul {
   list-style: none;
