@@ -37,7 +37,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://esm.sh https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co wss://yhjfbthakxuqbhercxrz.supabase.co; img-src 'self' data: blob: https://yhjfbthakxuqbhercxrz.supabase.co; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+          "value": "default-src 'self'; script-src 'self' https://esm.sh https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co wss://yhjfbthakxuqbhercxrz.supabase.co https://viacep.com.br; img-src 'self' data: blob: https://yhjfbthakxuqbhercxrz.supabase.co; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
         }
       ]
     }

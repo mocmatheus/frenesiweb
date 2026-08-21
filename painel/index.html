@@ -179,6 +179,14 @@
           </div>
         </div>
 
+        <label for="cep">CEP</label>
+        <div style="display:flex; gap:10px; align-items:flex-start">
+          <input id="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" style="flex:1">
+          <button type="button" class="secundario" id="btn-cep" style="white-space:nowrap">Buscar</button>
+        </div>
+        <p class="erro" id="erro-cep" style="min-height:0"></p>
+        <p id="achado-cep" class="aviso escondido"></p>
+
         <label for="endereco">Endereço</label>
         <input id="endereco" maxlength="200">
 
@@ -420,6 +428,83 @@ function preencherForm(ev) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/**
+ * Zonas do MVP, e as palavras que costumam apontar para cada uma.
+ *
+ * ⚠️ O bairro dos Correios NÃO é uma das 7 zonas do app, e isso não é
+ * um detalhe: são taxonomias diferentes. O CEP da Avenida Paulista
+ * devolve "Bela Vista", não "Paulista" -- medido. Um mapeamento
+ * automático que confiasse no nome erraria calado, e um evento com a
+ * zona errada aparece para a sala errada.
+ *
+ * Por isso isto SUGERE e não decide: o palpite marca o select, mostra de
+ * onde veio, e a pessoa confirma ou troca.
+ */
+const PISTAS_ZONA = {
+  pinheiros: ['pinheiros', 'alto de pinheiros'],
+  vila_madalena: ['vila madalena', 'sumarezinho'],
+  butanta: ['butanta', 'butantã', 'rio pequeno', 'cidade universitaria'],
+  augusta: ['consolacao', 'consolação', 'cerqueira cesar', 'cerqueira césar'],
+  paulista: ['bela vista', 'jardim paulista', 'paraiso', 'paraíso'],
+  vila_mariana: ['vila mariana', 'vila clementino', 'saude', 'saúde'],
+  itaim: ['itaim bibi', 'itaim', 'vila olimpia', 'vila olímpia'],
+};
+
+const semAcento = (s) =>
+  (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+
+function palpitarZona(bairroCorreios) {
+  const b = semAcento(bairroCorreios);
+  if (!b) return null;
+  for (const [zona, pistas] of Object.entries(PISTAS_ZONA)) {
+    if (pistas.some((p) => semAcento(p) === b)) return zona;
+  }
+  return null;
+}
+
+async function buscarCep() {
+  const bruto = ($('cep').value || '').replace(/\D/g, '');
+  mostrarErro($('erro-cep'), '');
+  $('achado-cep').classList.add('escondido');
+
+  if (bruto.length !== 8) {
+    mostrarErro($('erro-cep'), 'CEP precisa ter 8 dígitos.');
+    return;
+  }
+
+  const btn = $('btn-cep');
+  btn.disabled = true;
+  try {
+    const r = await fetch(`https://viacep.com.br/ws/${bruto}/json/`);
+    const d = await r.json();
+
+    // ⚠️ CEP inexistente responde HTTP 200 com {"erro":"true"}.
+    // Checar só `r.ok` trataria "não existe" como sucesso e deixaria o
+    // formulário em branco sem dizer por quê -- medido contra a API.
+    if (!r.ok || d.erro) {
+      mostrarErro($('erro-cep'), 'CEP não encontrado.');
+      return;
+    }
+
+    if (d.logradouro) $('endereco').value = d.logradouro;
+
+    const zona = palpitarZona(d.bairro);
+    if (zona) $('bairro').value = zona;
+
+    const caixa = $('achado-cep');
+    caixa.textContent = zona
+      ? `${d.logradouro || '(sem logradouro)'} — bairro "${d.bairro}", em ${d.localidade}/${d.uf}. `
+        + `Sugeri a zona correspondente; confira se está certa.`
+      : `${d.logradouro || '(sem logradouro)'} — bairro "${d.bairro}", em ${d.localidade}/${d.uf}. `
+        + `Este bairro não corresponde a nenhuma das 7 zonas do MVP — escolha a zona à mão.`;
+    caixa.classList.remove('escondido');
+  } catch (e) {
+    mostrarErro($('erro-cep'), 'Não foi possível consultar o CEP agora.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 function limparForm() {
   $('form-evento').reset();
   $('evento-id').value = '';
@@ -430,6 +515,8 @@ function limparForm() {
   $('btn-cancelar').classList.add('escondido');
   mostrarErro($('erro-form'), '');
   mostrarErro($('ok-form'), '');
+  mostrarErro($('erro-cep'), '');
+  $('achado-cep').classList.add('escondido');
 }
 
 async function salvar(e) {
@@ -480,6 +567,11 @@ $('form-login').addEventListener('submit', entrar);
 $('form-evento').addEventListener('submit', salvar);
 $('btn-sair').addEventListener('click', sair);
 $('btn-cancelar').addEventListener('click', limparForm);
+$('btn-cep').addEventListener('click', buscarCep);
+// Enter no campo de CEP busca em vez de enviar o formulario inteiro.
+$('cep').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); buscarCep(); }
+});
 
 // Sessão expirada ou revogada em outra aba derruba esta também.
 sb.auth.onAuthStateChange((evento) => {
