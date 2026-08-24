@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Um rolê no Frenesi</title>
+
+<!-- ⚠️ OG genérico, não por evento. O site é estático: gerar preview
+     com o nome e a capa de CADA rolê exigiria renderizar no servidor,
+     e hoje quem compartilha manda o nome e a data no próprio texto da
+     mensagem. Fica anotado como o próximo passo do link, não como algo
+     que ficou faltando por descuido. -->
+<meta property="og:title" content="Um rolê no Frenesi">
+<meta property="og:description" content="Alguém te chamou. Veja o rolê e quem mais vai.">
+<meta property="og:type" content="website">
+<meta name="robots" content="noindex">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --breu:#0D0B10; --s1:#151219; --s2:#1B171F; --s3:#221E25;
+    --papel:#FDFDF8; --papel60:#BFB9C2; --papel40:#8D858F;
+    --choque:#FF3EB5; --eletrico:#00B0E8; --borda:#2A242D;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--breu); color:var(--papel);
+    font-family:'Work Sans',system-ui,sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100dvh; padding:24px;
+  }
+  .cartao{width:100%; max-width:420px}
+  .kicker{
+    font-size:12px; font-weight:600; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--choque);
+  }
+  h1{font-family:'Bricolage Grotesque',serif; font-size:30px; line-height:1.15; margin:8px 0 6px}
+  .quando{color:var(--choque); font-weight:600; font-size:17px; margin:0 0 4px}
+  .onde{color:var(--papel60); font-size:15px; margin:0}
+  .capa{
+    width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:14px;
+    background:var(--s3); border:1px solid var(--borda); margin-bottom:20px;
+  }
+  .acoes{display:flex; flex-direction:column; gap:10px; margin-top:28px}
+  a.botao{
+    display:block; text-align:center; text-decoration:none;
+    padding:15px 20px; border-radius:999px; font-weight:600; font-size:16px;
+  }
+  a.primario{background:var(--choque); color:var(--breu)}
+  a.secundario{border:1px solid var(--eletrico); color:var(--eletrico)}
+  .nota{color:var(--papel40); font-size:13px; text-align:center; margin-top:18px; line-height:1.5}
+  .escondido{display:none}
+  #estado{color:var(--papel40); font-size:15px; text-align:center}
+</style>
+</head>
+<body>
+  <main class="cartao">
+    <p id="estado">Carregando o rolê…</p>
+
+    <div id="conteudo" class="escondido">
+      <img id="capa" class="capa escondido" alt="">
+      <span class="kicker">Rolê no Frenesi</span>
+      <h1 id="nome"></h1>
+      <p class="quando" id="quando"></p>
+      <p class="onde" id="onde"></p>
+
+      <div class="acoes">
+        <a class="botao primario" id="abrir" href="#">Abrir no app</a>
+        <a class="botao secundario" href="/download.html">Ainda não tenho o app</a>
+      </div>
+
+      <p class="nota">
+        No Frenesi, quem marca “Eu vou” vê e é visto por quem também vai.
+      </p>
+    </div>
+  </main>
+
+  <script type="module" src="/r/r.js"></script>
+</body>
+</html>

@@ -139,6 +139,11 @@
     background:var(--s3); border:1px solid var(--borda)
   }
   .provas .semprova{color:var(--papel40); font-size:14px}
+  #previa-capa{
+    display:block; width:100%; max-width:320px; aspect-ratio:16/9;
+    object-fit:cover; border-radius:10px; border:1px solid var(--borda);
+    margin-top:10px; background:var(--s3)
+  }
   .vazio{color:var(--papel40); font-size:14px; padding:22px 0}
   .topo{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap}
   .acoes-linha{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px}
@@ -241,6 +246,14 @@
 
         <label for="lineup">Lineup</label>
         <input id="lineup" maxlength="300">
+
+        <label for="capa">Capa</label>
+        <p class="sub" style="margin:0 0 8px">
+          1200 &times; 675 (16:9), at&eacute; 2&nbsp;MB. JPG, PNG ou WebP.
+        </p>
+        <input id="capa" type="file" accept="image/jpeg,image/png,image/webp">
+        <p class="erro" id="erro-capa" style="min-height:0"></p>
+        <img id="previa-capa" class="escondido" alt="Pr&eacute;via da capa">
 
         <label for="descricao">Descrição</label>
         <textarea id="descricao" maxlength="1000"></textarea>

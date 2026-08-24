@@ -73,3 +73,33 @@
     # Supabase. Nenhum formulário faz submit de verdade, então qualquer
     # submit é coisa injetada.
     Content-Security-Policy = "default-src 'self'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co wss://yhjfbthakxuqbhercxrz.supabase.co https://viacep.com.br; img-src 'self' data: blob: https://yhjfbthakxuqbhercxrz.supabase.co; media-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+
+# ═══════════════════════════════════════════════════════════════════
+# Página do rolê compartilhado
+# ═══════════════════════════════════════════════════════════════════
+#
+# Nenhuma chave se repete nos blocos acima -- ver a nota sobre a Netlify
+# concatenar valores de chaves duplicadas.
+[[headers]]
+  for = "/r/*"
+
+  [headers.values]
+    # Não é página de índice: cada URL é um rolê específico, e a lista de
+    # rolês não é para buscador. Mas TAMBÉM não pode ser `no-store` como
+    # o painel -- este link é para circular, e a CDN guardando o HTML é
+    # o que faz ele abrir rápido quando vira mensagem em grupo.
+    X-Robots-Tag = "noindex, nofollow"
+
+    # ⚠️ `script-src 'self'` de novo, e o script já nasce em /r/r.js por
+    # causa disso -- inline não passa, e a lição é a mesma que o painel
+    # custou aprender.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co; img-src 'self' data: https://yhjfbthakxuqbhercxrz.supabase.co; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+
+# ⚠️ Sem este redirect o link inteiro morre no servidor: /r/<uuid> não é
+# um arquivo, então a Netlify devolveria 404 ANTES de qualquer script
+# rodar. Status 200 (rewrite, não redirect) mantém a URL na barra, que é
+# o que o script lê para saber qual rolê mostrar.
+[[redirects]]
+  from = "/r/*"
+  to = "/r/index.html"
+  status = 200

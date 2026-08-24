@@ -263,6 +263,42 @@ function limparForm() {
   mostrarErro($('ok-form'), '');
   mostrarErro($('erro-cep'), '');
   $('achado-cep').classList.add('escondido');
+  mostrarErro($('erro-capa'), '');
+  $('capa').value = '';
+  $('previa-capa').classList.add('escondido');
+}
+
+/**
+ * Sobe a capa selecionada, se houver.
+ *
+ * Devolve o caminho novo, ou `undefined` quando nada foi escolhido --
+ * que e' o sinal de "nao mexa na coluna".
+ *
+ * ⚠️ O nome do arquivo carrega um carimbo de tempo. Sem ele, reenviar a
+ * capa de um evento gravaria no mesmo caminho, e a URL publica -- que a
+ * CDN e o app guardam justamente por ser estavel -- continuaria
+ * servindo a imagem velha por horas.
+ */
+async function subirCapa(eventoId) {
+  const arquivo = $('capa').files && $('capa').files[0];
+  if (!arquivo) return undefined;
+
+  if (arquivo.size > 2 * 1024 * 1024) {
+    throw new Error('A capa passa de 2 MB. Reduza e tente de novo.');
+  }
+
+  const ext = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' })[arquivo.type];
+  if (!ext) throw new Error('Formato não aceito. Use JPG, PNG ou WebP.');
+
+  const pasta = eventoId || 'novos';
+  const caminho = `${pasta}/${Date.now()}.${ext}`;
+
+  const { error } = await sb.storage
+    .from('event-covers')
+    .upload(caminho, arquivo, { contentType: arquivo.type, upsert: false });
+
+  if (error) throw new Error(error.message || 'Falha ao enviar a capa.');
+  return caminho;
 }
 
 async function salvar(e) {
@@ -273,6 +309,19 @@ async function salvar(e) {
   btn.disabled = true;
 
   const id = $('evento-id').value;
+
+  // ⚠️ A capa sobe ANTES do insert/update, e um erro aqui ABORTA o
+  // salvamento. Salvar o evento e engolir a falha da imagem deixaria um
+  // rolê publicado sem flyer e sem ninguem saber por que.
+  let capaPath;
+  try {
+    capaPath = await subirCapa(id);
+  } catch (err) {
+    mostrarErro($('erro-capa'), err.message || 'Não foi possível enviar a capa.');
+    btn.disabled = false;
+    return;
+  }
+
   const linha = {
     nome: $('nome').value.trim(),
     bairro: $('bairro').value,
@@ -287,6 +336,11 @@ async function salvar(e) {
     min_confirmados: Number($('min_confirmados').value),
     publicado: $('publicado').checked,
   };
+
+  // `undefined` = nao mexeram na capa, entao a coluna nao entra no
+  // update e o valor antigo permanece. Distinguir isso de `null` importa:
+  // null apagaria a capa de quem so' quis corrigir o horario.
+  if (capaPath !== undefined) linha.capa_path = capaPath;
 
   const { error } = id
     ? await sb.from('events').update(linha).eq('id', id)
@@ -547,6 +601,17 @@ $('form-evento').addEventListener('submit', salvar);
 $('btn-sair').addEventListener('click', sair);
 $('btn-cancelar').addEventListener('click', limparForm);
 $('btn-cep').addEventListener('click', buscarCep);
+
+// Previa local por object URL: mostra o enquadramento 16:9 real ANTES de
+// subir, que e' quando ainda da' para trocar a imagem.
+$('capa').addEventListener('change', () => {
+  mostrarErro($('erro-capa'), '');
+  const f = $('capa').files && $('capa').files[0];
+  const img = $('previa-capa');
+  if (!f) { img.classList.add('escondido'); return; }
+  img.src = URL.createObjectURL(f);
+  img.classList.remove('escondido');
+});
 // Enter no campo de CEP busca em vez de enviar o formulario inteiro.
 $('cep').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') { e.preventDefault(); buscarCep(); }
