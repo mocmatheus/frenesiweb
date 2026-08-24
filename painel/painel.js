@@ -295,7 +295,21 @@ async function subirCapa(eventoId) {
 
   const { error } = await sb.storage
     .from('event-covers')
-    .upload(caminho, arquivo, { contentType: arquivo.type, upsert: false });
+    // `cacheControl` explicito: o padrao do supabase-js e' 1 hora.
+    // Medido numa capa subida sem ele: `public, max-age=3600`.
+    //
+    // Uma hora nao e' errado, e' curto -- a capa de um role nao muda, e
+    // revalidar de hora em hora joga fora o que o bucket publico
+    // comprou. 7 dias e' seguro porque o caminho carrega carimbo de
+    // tempo: trocar a capa gera outra URL em vez de sobrescrever esta.
+    //
+    // ⚠️ Conferir com `curl -I` engana: o HEAD do Storage devolve
+    // `no-cache` mesmo quando o GET devolve o valor certo.
+    .upload(caminho, arquivo, {
+      contentType: arquivo.type,
+      cacheControl: '604800',
+      upsert: false,
+    });
 
   if (error) throw new Error(error.message || 'Falha ao enviar a capa.');
   return caminho;
