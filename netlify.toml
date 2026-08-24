@@ -1,0 +1,71 @@
+# Cabeçalhos de segurança.
+#
+# ⚠️ Este arquivo existe porque o site é servido pela NETLIFY, não pela
+# Vercel. O `vercel.json` que estava aqui nunca teve efeito nenhum -- não
+# porque estivesse errado, mas porque a plataforma que o leria não é a
+# que atende frenesi.app. Medido na resposta: `Server: Netlify`,
+# `Cache-Status: "Netlify Edge"`, `X-Nf-Request-Id`.
+#
+# Sintoma que isso causava: as respostas voltavam sem
+# X-Content-Type-Options, sem X-Frame-Options e sem CSP, e o
+# `Cache-Control` era o padrão da plataforma. Config no repositório não é
+# config aplicada.
+
+# ═══════════════════════════════════════════════════════════════════
+# Site inteiro
+# ═══════════════════════════════════════════════════════════════════
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+
+    # Nada aqui pede câmera, microfone, localização ou pagamento. Negar
+    # de antemão é o que impede um script injetado de pedir por nós.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+
+    # ⚠️ `no-referrer` no site TODO, e não só no painel, para não haver
+    # duas regras declarando Referrer-Policy. Quando dois blocos casam o
+    # mesmo caminho, a Netlify junta os valores em vez de escolher um --
+    # e um Referrer-Policy com dois valores é ambiguidade onde o objetivo
+    # era garantia. Como o site é institucional e não mede atribuição de
+    # tráfego, não há nada a perder em não vazar a URL de origem.
+    Referrer-Policy = "no-referrer"
+
+# ═══════════════════════════════════════════════════════════════════
+# Painel administrativo
+# ═══════════════════════════════════════════════════════════════════
+#
+# Nenhum destes cabeçalhos aparece no bloco de cima: repetir uma chave
+# faria a Netlify concatenar os dois valores.
+[[headers]]
+  for = "/painel/*"
+
+  [headers.values]
+    # Fora do índice dos buscadores. O caminho é secreto por não estar
+    # publicado em lugar nenhum -- e é por isso que ele também NÃO entra
+    # no robots.txt: um `Disallow: /painel/` seria um arquivo público
+    # anunciando exatamente onde fica a porta.
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+
+    # Página de administração não fica em cache de CDN, de proxy nem de
+    # navegador. O botão "voltar" depois de sair não pode redesenhar a
+    # tela com os dados de quem já saiu.
+    Cache-Control = "no-store, no-cache, must-revalidate, private"
+
+    # ⚠️ `script-src 'self'` NÃO cobre script inline -- e o painel tinha
+    # todo o JavaScript dentro de um `<script type="module">` na página.
+    # Esta política teria deixado a tela em branco. O script virou
+    # /painel/painel.js por causa disto: a alternativa seria
+    # 'unsafe-inline', que é justamente desligar a defesa contra XSS que
+    # a CSP existe para dar.
+    #
+    # `style-src` mantém 'unsafe-inline' porque a página usa atributos
+    # `style=`; estilo inline não executa código, então o risco é de
+    # outra ordem.
+    #
+    # `form-action 'none'`: o painel envia tudo por fetch para o
+    # Supabase. Nenhum formulário faz submit de verdade, então qualquer
+    # submit é coisa injetada.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co wss://yhjfbthakxuqbhercxrz.supabase.co https://viacep.com.br; img-src 'self' data: blob: https://yhjfbthakxuqbhercxrz.supabase.co; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
