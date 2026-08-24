@@ -65,7 +65,11 @@
     # `style=`; estilo inline não executa código, então o risco é de
     # outra ordem.
     #
+    # ⚠️ `media-src` declarado à parte: vídeo NÃO cai em `img-src`. Sem
+    # esta diretiva ele herdaria `default-src 'self'` e o vídeo de uma
+    # denúncia não tocaria -- justamente a prova que decide o caso.
+    #
     # `form-action 'none'`: o painel envia tudo por fetch para o
     # Supabase. Nenhum formulário faz submit de verdade, então qualquer
     # submit é coisa injetada.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co wss://yhjfbthakxuqbhercxrz.supabase.co https://viacep.com.br; img-src 'self' data: blob: https://yhjfbthakxuqbhercxrz.supabase.co; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co wss://yhjfbthakxuqbhercxrz.supabase.co https://viacep.com.br; img-src 'self' data: blob: https://yhjfbthakxuqbhercxrz.supabase.co; media-src 'self' https://yhjfbthakxuqbhercxrz.supabase.co; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"

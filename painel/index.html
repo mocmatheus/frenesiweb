@@ -111,6 +111,34 @@
   }
   .selo-pub{background:rgba(36,209,126,.14); color:var(--sucesso)}
   .selo-rasc{background:rgba(141,133,143,.16); color:var(--papel40)}
+  .abas{display:flex; gap:8px; margin:0 0 22px; border-bottom:1px solid var(--borda)}
+  .aba{
+    appearance:none; background:none; border:0; border-bottom:2px solid transparent;
+    color:var(--papel40); font:inherit; font-weight:600; font-size:15px;
+    padding:10px 14px; cursor:pointer; margin-bottom:-1px
+  }
+  .aba:hover{color:var(--papel)}
+  .aba.ativa{color:var(--choque); border-bottom-color:var(--choque)}
+  .contador{
+    display:inline-block; min-width:20px; margin-left:7px; padding:1px 7px;
+    border-radius:999px; background:var(--choque); color:var(--breu);
+    font-size:12px; font-weight:700
+  }
+
+  .denuncia{border-left:3px solid var(--borda)}
+  .denuncia.grave{border-left-color:var(--choque)}
+  .etiquetas{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px}
+  .etiqueta{
+    font-size:12px; font-weight:600; padding:3px 9px; border-radius:999px;
+    background:var(--s3); color:var(--papel60)
+  }
+  .etiqueta.alerta{background:#3A1220; color:var(--choque)}
+  .provas{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0}
+  .provas img, .provas video{
+    width:118px; height:210px; object-fit:cover; border-radius:8px;
+    background:var(--s3); border:1px solid var(--borda)
+  }
+  .provas .semprova{color:var(--papel40); font-size:14px}
   .vazio{color:var(--papel40); font-size:14px; padding:22px 0}
   .topo{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap}
   .acoes-linha{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px}
@@ -146,12 +174,22 @@
     <div class="topo">
       <div>
         <span class="kicker">Frenesi</span>
-        <h1>Eventos</h1>
+        <h1>Painel</h1>
         <p class="sub" id="quem"></p>
       </div>
       <button class="terciario" id="btn-sair">Sair</button>
     </div>
 
+    <!-- Duas abas porque sao dois trabalhos com relogios diferentes:
+         cadastrar evento pode esperar; denuncia na fila tem alguem fora
+         do ar esperando. O contador existe para essa fila nao ficar
+         invisivel de dentro da outra aba. -->
+    <nav class="abas">
+      <button type="button" class="aba ativa" id="aba-eventos">Eventos</button>
+      <button type="button" class="aba" id="aba-revisao">Revisão<span class="contador escondido" id="contador-fila">0</span></button>
+    </nav>
+
+    <div id="painel-eventos">
     <div class="caixa">
       <h2 style="margin-top:0" id="titulo-form">Novo evento</h2>
       <form id="form-evento">
@@ -250,6 +288,19 @@
         <tbody id="lista"></tbody>
       </table>
       <p class="vazio escondido" id="lista-vazia">Nenhum evento cadastrado ainda.</p>
+    </div>
+    </div><!-- /painel-eventos -->
+
+    <!-- ══════════ REVISAO HUMANA (SAFE-08) ══════════ -->
+    <div id="painel-revisao" class="escondido">
+      <p class="sub" style="margin-top:0">
+        Denúncias esperando decisão. Quem está <strong>quarentenado</strong> aparece
+        primeiro — é a única linha da fila onde alguém está fora do ar enquanto espera.
+      </p>
+
+      <div id="fila"></div>
+      <p class="vazio escondido" id="fila-vazia">Nada esperando revisão.</p>
+      <p class="erro" id="erro-fila"></p>
     </div>
   </section>
 </div>

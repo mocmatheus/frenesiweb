@@ -70,7 +70,10 @@ async function decidirAcesso() {
   $('quem').textContent = session.user.email;
   telaLogin.classList.add('escondido');
   telaPainel.classList.remove('escondido');
-  await carregarEventos();
+  // As duas em paralelo: o contador da aba de Revisao precisa estar
+  // certo ANTES de a pessoa decidir em qual aba ficar. Carregar a fila
+  // so' ao clicar na aba esconderia justamente a fila cheia.
+  await Promise.all([carregarEventos(), carregarFila()]);
 }
 
 function mostrarLogin() {
@@ -305,6 +308,239 @@ async function salvar(e) {
 }
 
 // ─────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────
+// Revisão humana (SAFE-08)
+// ─────────────────────────────────────────────────────────────
+//
+// A quarentena automática tira do ar sozinha desde a migração 14. Esta
+// tela é o outro lado, que nunca existiu: sem ela, um falso positivo
+// deixa alguém fora do ar indefinidamente.
+
+const RAZOES = {
+  menor_de_idade: 'Menor de idade',
+  nudez_sexual: 'Nudez sexual',
+  violencia: 'Violência',
+  assedio: 'Assédio',
+  perfil_falso: 'Perfil falso',
+  discurso_de_odio: 'Discurso de ódio',
+  outro: 'Outro',
+};
+
+// As mesmas três que a migração 14 usa para quarentenar na hora.
+const GRAVES = new Set(['menor_de_idade', 'nudez_sexual', 'violencia']);
+
+function trocarAba(qual) {
+  const emRevisao = qual === 'revisao';
+  $('aba-eventos').classList.toggle('ativa', !emRevisao);
+  $('aba-revisao').classList.toggle('ativa', emRevisao);
+  $('painel-eventos').classList.toggle('escondido', emRevisao);
+  $('painel-revisao').classList.toggle('escondido', !emRevisao);
+}
+
+function atualizarContador(n) {
+  const c = $('contador-fila');
+  c.textContent = String(n);
+  c.classList.toggle('escondido', n === 0);
+}
+
+/**
+ * URLs assinadas da prova.
+ *
+ * ⚠️ `createSignedUrls` devolve a negação DENTRO de cada item, não no
+ * `error` do topo -- falha parcial passa calada. Daí o filtro item a
+ * item em vez de confiar só no erro geral.
+ *
+ * 300s de validade: tempo de olhar e decidir. A policy do banco só
+ * libera enquanto a denúncia estiver aberta, então uma URL vazada
+ * também morre quando o caso é julgado.
+ */
+async function assinarProvas(midia) {
+  const itens = Array.isArray(midia) ? midia : [];
+  if (itens.length === 0) return [];
+
+  const { data, error } = await sb.storage
+    .from('profile-media')
+    .createSignedUrls(itens.map((m) => m.path), 300);
+  if (error) return [];
+
+  return (data ?? [])
+    .map((r, i) => (r && r.signedUrl ? { url: r.signedUrl, tipo: itens[i] && itens[i].type } : null))
+    .filter(Boolean);
+}
+
+function montarCard(d) {
+  const grave = GRAVES.has(d.razao);
+  const outras = Number(d.outras_graves_abertas || 0);
+
+  const card = document.createElement('div');
+  card.className = 'caixa denuncia' + (grave ? ' grave' : '');
+
+  const etiquetas = document.createElement('div');
+  etiquetas.className = 'etiquetas';
+  const etiqueta = (txt, alerta) => {
+    const e = document.createElement('span');
+    e.className = 'etiqueta' + (alerta ? ' alerta' : '');
+    e.textContent = txt;
+    etiquetas.appendChild(e);
+  };
+  etiqueta(RAZOES[d.razao] || d.razao, grave);
+  if (d.quarentenado_em) etiqueta('fora do ar desde ' + fmt.format(new Date(d.quarentenado_em)), true);
+  if (outras > 0) etiqueta(outras + (outras === 1 ? ' outra grave aberta' : ' outras graves abertas'));
+  etiqueta('denunciada em ' + fmt.format(new Date(d.criada_em)));
+  if (d.tem_mensagens) etiqueta('tem conversa preservada');
+  card.appendChild(etiquetas);
+
+  // textContent e nunca innerHTML: `detalhes` e' texto digitado pelo
+  // denunciante. Concatenar HTML aqui seria XSS na pagina privilegiada.
+  const nome = document.createElement('h2');
+  nome.style.margin = '0 0 6px';
+  nome.textContent = d.denunciado_nome;
+  card.appendChild(nome);
+
+  if (d.detalhes) {
+    const det = document.createElement('p');
+    det.className = 'sub';
+    det.style.margin = '0';
+    det.textContent = '“' + d.detalhes + '”';
+    card.appendChild(det);
+  }
+
+  const provas = document.createElement('div');
+  provas.className = 'provas';
+  card.appendChild(provas);
+
+  const nota = document.createElement('input');
+  nota.maxLength = 300;
+  nota.placeholder = 'Nota da decisão (fica no registro)';
+  card.appendChild(nota);
+
+  const acoes = document.createElement('div');
+  acoes.className = 'acoes-linha';
+  acoes.style.marginTop = '12px';
+
+  const bImp = document.createElement('button');
+  bImp.type = 'button';
+  bImp.className = 'secundario';
+  // ⚠️ O rótulo diz a consequência REAL, não a genérica. Com outra
+  // denúncia grave aberta, julgar improcedente NÃO devolve ao ar -- e um
+  // botão prometendo o contrário faria o revisor achar que resolveu.
+  bImp.textContent = d.quarentenado_em
+    ? (outras > 0 ? 'Improcedente — segue fora (há outra grave)' : 'Improcedente — devolver ao ar')
+    : 'Improcedente';
+
+  const bProc = document.createElement('button');
+  bProc.type = 'button';
+  bProc.className = 'perigo';
+  bProc.textContent = d.quarentenado_em ? 'Procedente — manter fora' : 'Procedente';
+
+  acoes.appendChild(bImp);
+  acoes.appendChild(bProc);
+  card.appendChild(acoes);
+
+  const saida = document.createElement('p');
+  saida.className = 'erro';
+  card.appendChild(saida);
+
+  const julgar = async (decisao) => {
+    bImp.disabled = true;
+    bProc.disabled = true;
+    saida.className = 'erro';
+    saida.textContent = '';
+
+    const { data, error } = await sb.rpc('revisar_denuncia', {
+      p_report_id: d.report_id,
+      p_decisao: decisao,
+      p_nota: nota.value || null,
+    });
+
+    // ⚠️ Checar `data.ok`, e nao so' `error`. Um no-op (denuncia ja'
+    // julgada por outro revisor) volta SEM erro de transporte -- tratar
+    // isso como sucesso faria o botao parecer morto.
+    if (error) {
+      saida.textContent = 'Não foi possível registrar. Tenta de novo.';
+      bImp.disabled = false;
+      bProc.disabled = false;
+      return;
+    }
+
+    if (!data || !data.ok) {
+      const motivos = {
+        nao_autorizado: 'Esta conta não pode revisar.',
+        decisao_invalida: 'Decisão inválida.',
+        nao_encontrada: 'Denúncia não encontrada.',
+        ja_revisada: 'Alguém já julgou esta denúncia.',
+      };
+      const razao = data && data.reason;
+      saida.textContent = motivos[razao] || 'Não foi possível registrar.';
+      if (razao !== 'ja_revisada') {
+        bImp.disabled = false;
+        bProc.disabled = false;
+      }
+      return;
+    }
+
+    saida.className = 'ok';
+    if (data.quarentena_levantada) {
+      saida.textContent = 'Registrado. O perfil voltou ao ar.';
+    } else if (d.quarentenado_em) {
+      saida.textContent = 'Registrado. O perfil segue fora do ar.';
+    } else {
+      saida.textContent = 'Registrado.';
+    }
+
+    // Recarrega para a fila e o contador refletirem a decisão.
+    setTimeout(carregarFila, 1200);
+  };
+
+  bImp.addEventListener('click', () => julgar('improcedente'));
+  bProc.addEventListener('click', () => julgar('procedente'));
+
+  return { card, provas };
+}
+
+async function carregarFila() {
+  const alvo = $('fila');
+  alvo.textContent = '';
+  mostrarErro($('erro-fila'), '');
+
+  const { data, error } = await sb.rpc('fila_revisao');
+  if (error) {
+    mostrarErro($('erro-fila'), 'Não foi possível carregar a fila.');
+    return;
+  }
+
+  const fila = data || [];
+  atualizarContador(fila.length);
+  $('fila-vazia').classList.toggle('escondido', fila.length > 0);
+
+  for (const d of fila) {
+    const montado = montarCard(d);
+    alvo.appendChild(montado.card);
+
+    // Assina DEPOIS de anexar: a lista aparece na hora e cada prova
+    // entra quando chega. Esperar todas as assinaturas deixaria a tela
+    // vazia enquanto o revisor já poderia estar lendo os motivos.
+    assinarProvas(d.midia).then((urls) => {
+      if (urls.length === 0) {
+        const p = document.createElement('p');
+        p.className = 'semprova';
+        p.textContent = 'Sem mídia preservada nesta denúncia.';
+        montado.provas.appendChild(p);
+        return;
+      }
+      for (const u of urls) {
+        const el = document.createElement(u.tipo === 'video' ? 'video' : 'img');
+        el.src = u.url;
+        if (u.tipo === 'video') el.controls = true;
+        montado.provas.appendChild(el);
+      }
+    });
+  }
+}
+
+$('aba-eventos').addEventListener('click', () => trocarAba('eventos'));
+$('aba-revisao').addEventListener('click', () => trocarAba('revisao'));
 
 $('form-login').addEventListener('submit', entrar);
 $('form-evento').addEventListener('submit', salvar);
