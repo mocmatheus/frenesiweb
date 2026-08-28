@@ -55,7 +55,12 @@
     margin:0; background:var(--breu); color:var(--papel);
     font-family:'Work Sans',system-ui,sans-serif; font-size:15px; line-height:1.55;
   }
+  /* ⚠️ A largura de leitura vale para o LOGIN, não para o painel.
+     O painel virou casca de largura inteira (barra lateral + conteúdo),
+     e deixá-lo dentro de 940px espremeria a tabela de rolês -- que
+     agora tem sete colunas -- num terço da tela disponível. */
   .wrap{max-width:940px; margin:0 auto; padding:32px 20px 80px}
+  .wrap:has(> #tela-painel:not(.escondido)){max-width:none; padding:0}
   h1{font-family:'Bricolage Grotesque',sans-serif; font-size:1.6rem; margin:0 0 4px}
   h2{font-family:'Bricolage Grotesque',sans-serif; font-size:1.15rem; margin:32px 0 12px}
   .kicker{
@@ -146,6 +151,70 @@
   }
   .vazio{color:var(--papel40); font-size:14px; padding:22px 0}
   .topo{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap}
+
+  /* ── Casca do painel ──────────────────────────────────────────
+     Barra lateral no lugar de abas no topo. A troca acontece porque
+     abas param de funcionar quando as seções crescem: não cabe
+     contador em cada uma, e o que exige ação -- prazo estourado --
+     fica escondido atrás de um clique. A lateral mostra os três
+     números o tempo todo. */
+  .casca{display:flex; min-height:100vh; align-items:stretch}
+  .lateral{
+    width:232px; flex-shrink:0; background:var(--s1);
+    border-right:1px solid var(--borda); padding:24px 12px;
+    display:flex; flex-direction:column;
+  }
+  .marca{
+    display:flex; align-items:center; gap:10px; padding:0 8px 24px;
+    font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:17px;
+  }
+  .menu{display:flex; flex-direction:column; gap:2px}
+  .item{
+    display:flex; align-items:center; gap:10px; width:100%;
+    appearance:none; background:none; border:0; text-align:left;
+    padding:9px 12px; border-radius:8px; color:var(--papel60);
+    font:inherit; font-size:14px; cursor:pointer;
+  }
+  .item:hover{color:var(--papel); background:var(--s2)}
+  .item.ativa{background:var(--s3); color:var(--papel); font-weight:600}
+  .item .contador{margin-left:auto}
+  .rodape-lateral{margin-top:auto; padding:16px 8px 0; border-top:1px solid var(--borda)}
+  .conteudo{flex-grow:1; padding:32px 36px 80px; min-width:0; max-width:1180px}
+
+  .cartoes{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin-bottom:22px}
+  @media(max-width:900px){
+    .casca{flex-direction:column}
+    .lateral{width:100%; border-right:0; border-bottom:1px solid var(--borda)}
+    .menu{flex-direction:row; flex-wrap:wrap}
+    .rodape-lateral{border-top:0}
+    .conteudo{padding:24px 20px 60px}
+    .cartoes{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  .cartao{background:var(--s1); border:1px solid var(--borda); border-radius:16px; padding:20px}
+  .cartao .rotulo{
+    font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--papel40); font-weight:600; margin-bottom:10px;
+  }
+  .cartao .valor{
+    font-family:'Bricolage Grotesque',sans-serif; font-size:34px; font-weight:700; line-height:1;
+  }
+  .cartao .nota{font-size:13px; color:var(--papel40); margin-top:6px}
+  .valor.alerta{color:var(--aviso)}
+  .valor.perigo{color:var(--perigo)}
+
+  .urgente{
+    display:flex; align-items:center; gap:14px; border-left:3px solid var(--perigo);
+    background:var(--s2); border-radius:8px; padding:14px 16px; margin-bottom:22px;
+  }
+  .duplas{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:20px}
+  @media(max-width:900px){.duplas{grid-template-columns:1fr}}
+  .linha-sala{
+    display:flex; align-items:center; gap:12px; padding:12px 14px;
+    background:var(--s2); border-radius:12px; margin-bottom:10px;
+  }
+  .selo-aberta{background:rgba(36,209,126,.14); color:var(--sucesso)}
+  .selo-quorum{background:rgba(242,184,75,.14); color:var(--aviso)}
+  .selo-fora{background:var(--s3); color:var(--papel40)}
   .acoes-linha{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px}
 </style>
 </head>
@@ -175,26 +244,87 @@
   </section>
 
   <!-- ══════════ PAINEL ══════════ -->
-  <section id="tela-painel" class="escondido">
-    <div class="topo">
-      <div>
-        <span class="kicker">Frenesi</span>
-        <h1>Painel</h1>
-        <p class="sub" id="quem"></p>
-      </div>
-      <button class="terciario" id="btn-sair">Sair</button>
-    </div>
+  <section id="tela-painel" class="escondido casca">
 
-    <!-- Duas abas porque sao dois trabalhos com relogios diferentes:
-         cadastrar evento pode esperar; denuncia na fila tem alguem fora
-         do ar esperando. O contador existe para essa fila nao ficar
-         invisivel de dentro da outra aba. -->
-    <nav class="abas">
-      <button type="button" class="aba ativa" id="aba-eventos">Eventos</button>
-      <button type="button" class="aba" id="aba-revisao">Revisão<span class="contador escondido" id="contador-fila">0</span></button>
+    <!-- ⚠️ NAO ha item de menu para Midia, Pessoas ou Metricas.
+         As tres precisam de RPC que ainda nao existe (a RLS nao entrega
+         media_moderation nem perfil de terceiro ao painel), e item de
+         menu que nao leva a lugar nenhum e' o mesmo erro do
+         min_confirmados: controle oferecido que nao faz nada. Entram
+         quando a funcao existir. -->
+    <nav class="lateral">
+      <div class="marca">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+          <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h7A2.5 2.5 0 0 1 15 6.5v4A2.5 2.5 0 0 1 12.5 13H8l-3.5 3v-3A2.5 2.5 0 0 1 3 10.5v-4Z" fill="#00B0E8"/>
+          <path d="M11 13.5A2.5 2.5 0 0 1 13.5 11h7A2.5 2.5 0 0 1 23 13.5v4A2.5 2.5 0 0 1 20.5 20H17l-3.5 3v-3a2.5 2.5 0 0 1-2.5-2.5v-4Z" fill="#FF3EB5"/>
+        </svg>
+        Frenesi
+      </div>
+      <div class="menu">
+        <button type="button" class="item ativa" id="ir-visao">Visão geral</button>
+        <button type="button" class="item" id="ir-revisao">Revisão<span class="contador escondido" id="contador-fila">0</span></button>
+        <button type="button" class="item" id="ir-roles">Rolês</button>
+      </div>
+      <div class="rodape-lateral">
+        <p class="sub" style="margin:0 0 8px; font-size:12px" id="quem"></p>
+        <button class="terciario" id="btn-sair" style="padding:0">Sair</button>
+      </div>
     </nav>
 
-    <div id="painel-eventos">
+    <div class="conteudo">
+
+    <!-- ══════════ VISAO GERAL ══════════ -->
+    <div id="painel-visao">
+      <span class="kicker">Operação</span>
+      <h1>Visão geral</h1>
+      <p class="sub" id="visao-relogio"></p>
+
+      <div class="urgente escondido" id="faixa-urgente">
+        <div style="flex-grow:1">
+          <div style="font-weight:600; font-size:14px" id="urgente-titulo"></div>
+          <div style="font-size:13px; color:var(--papel40)">
+            Denúncia nascida em sala aberta vale 1h. O prazo é carimbado quando ela chega — não volta a 72h quando a sala fecha.
+          </div>
+        </div>
+        <button class="perigo" id="btn-ver-fila">Ver fila</button>
+      </div>
+
+      <div class="cartoes">
+        <div class="cartao">
+          <div class="rotulo">Salas abertas</div>
+          <div class="valor" id="n-salas">—</div>
+          <div class="nota" id="n-salas-nota">janela e quórum</div>
+        </div>
+        <div class="cartao">
+          <div class="rotulo">Denúncias abertas</div>
+          <div class="valor" id="n-denuncias">—</div>
+          <div class="nota" id="n-denuncias-nota">esperando decisão</div>
+        </div>
+        <div class="cartao">
+          <div class="rotulo">Em quarentena</div>
+          <div class="valor" id="n-quarentena">—</div>
+          <div class="nota">fora do ar automaticamente</div>
+        </div>
+        <div class="cartao">
+          <div class="rotulo">Fila de mídia</div>
+          <div class="valor" id="n-midia">—</div>
+          <div class="nota" id="n-midia-nota">aguardando veredito</div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:0">Salas abertas agora</h2>
+      <div class="caixa" id="salas-abertas"></div>
+      <p class="vazio escondido" id="salas-vazias">Nenhuma sala aberta neste momento.</p>
+
+      <div class="aviso">
+        <strong>Quórum e exposição contam populações diferentes.</strong> O quórum conta
+        <strong>confirmados</strong> — vale a pena ir? O limiar de exposição conta
+        <strong>visíveis</strong> — dá para mostrar rostos? Uma sala com 8 confirmados dos quais
+        5 estão fora por moderação tem quórum e não tem exposição, e as duas respostas estão certas.
+      </div>
+    </div>
+
+    <div id="painel-eventos" class="escondido">
     <div class="caixa">
       <h2 style="margin-top:0" id="titulo-form">Novo evento</h2>
       <form id="form-evento">
@@ -296,7 +426,7 @@
     <div class="caixa" style="padding:14px 12px">
       <table>
         <thead>
-          <tr><th>Evento</th><th>Quando</th><th>Onde</th><th>Estado</th><th></th></tr>
+          <tr><th>Evento</th><th>Quando</th><th>Onde</th><th>Confirmados</th><th>Sala</th><th>Estado</th><th></th></tr>
         </thead>
         <tbody id="lista"></tbody>
       </table>
@@ -306,15 +436,24 @@
 
     <!-- ══════════ REVISAO HUMANA (SAFE-08) ══════════ -->
     <div id="painel-revisao" class="escondido">
+      <span class="kicker">Operação</span>
+      <h1 style="margin-bottom:4px">Fila de revisão</h1>
+      <!-- ⚠️ Este texto dizia que quarentenado aparece PRIMEIRO. Deixou
+           de ser verdade na migração 56: a quarentena saiu do critério de
+           ordenação justamente porque ela ja' tirou a pessoa do ar -- e'
+           o caso MENOS urgente de olhar, nao o mais. Ordenar por ela
+           punha na frente os casos onde o dano ja' estava contido. -->
       <p class="sub" style="margin-top:0">
-        Denúncias esperando decisão. Quem está <strong>quarentenado</strong> aparece
-        primeiro — é a única linha da fila onde alguém está fora do ar enquanto espera.
+        Ordenada por <strong>prazo</strong>, nunca por chegada. Denúncia nascida em sala
+        aberta vale 1h; o resto, 72h.
       </p>
 
       <div id="fila"></div>
       <p class="vazio escondido" id="fila-vazia">Nada esperando revisão.</p>
       <p class="erro" id="erro-fila"></p>
     </div>
+
+    </div><!-- /conteudo -->
   </section>
 </div>
 

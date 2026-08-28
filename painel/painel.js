@@ -73,7 +73,7 @@ async function decidirAcesso() {
   // As duas em paralelo: o contador da aba de Revisao precisa estar
   // certo ANTES de a pessoa decidir em qual aba ficar. Carregar a fila
   // so' ao clicar na aba esconderia justamente a fila cheia.
-  await Promise.all([carregarEventos(), carregarFila()]);
+  await Promise.all([carregarResumo(), carregarEventos(), carregarFila()]);
 }
 
 function mostrarLogin() {
@@ -100,16 +100,118 @@ const BAIRROS = {
   augusta: 'Augusta', paulista: 'Paulista', vila_mariana: 'Vila Mariana', itaim: 'Itaim',
 };
 
+/**
+ * O resumo da operação, numa chamada só.
+ *
+ * ⚠️ Checar `ok`, não só `error`. `painel_resumo` recusa sessão sem
+ * admin devolvendo {ok:false} SEM erro de transporte -- olhar só o
+ * `error` faria a tela mostrar traços para sempre e parecer quebrada,
+ * quando na verdade a resposta chegou e disse não.
+ */
+async function carregarResumo() {
+  $('visao-relogio').textContent = new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'full', timeStyle: 'short', timeZone: FUSO,
+  }).format(new Date()) + ' — horário de Brasília';
+
+  const { data, error } = await sb.rpc('painel_resumo');
+  if (error || !data?.ok) return;
+
+  $('n-salas').textContent = data.salas_abertas;
+  $('n-salas-nota').textContent = `de ${data.roles_publicados} rolês publicados`;
+
+  $('n-denuncias').textContent = data.denuncias_abertas;
+  $('n-quarentena').textContent = data.em_quarentena;
+  $('n-midia').textContent = data.midia_pendente;
+
+  // Ritmo medido na última hora. Um número de fila sem ritmo não diz se
+  // vale esperar ou se algo travou -- 184 pendentes com 0/h é outro
+  // problema que 184 com 120/h.
+  const ritmo = data.midia_aprovada_1h;
+  $('n-midia-nota').textContent = data.midia_pendente === 0
+    ? 'fila vazia'
+    : ritmo > 0
+      ? `~${Math.round(ritmo / 60 * 10) / 10}/min · ${Math.ceil(data.midia_pendente / ritmo * 60)} min restantes`
+      : 'nada processado na última hora';
+
+  // ⚠️ Prazo estourado é o ÚNICO número aqui que é urgência. Os outros
+  // são contexto, e por isso só ele pinta a tela.
+  const estourou = data.prazo_estourado > 0;
+  $('faixa-urgente').classList.toggle('escondido', !estourou);
+  $('n-denuncias').classList.toggle('perigo', estourou);
+  if (estourou) {
+    $('urgente-titulo').textContent = data.prazo_estourado === 1
+      ? '1 denúncia com prazo estourado'
+      : `${data.prazo_estourado} denúncias com prazo estourado`;
+    $('n-denuncias-nota').textContent = `${data.prazo_estourado} fora do prazo`;
+  }
+}
+
+/** Sala aberta = dentro da janela E com quórum. Duas condições, não uma. */
+const salaAberta = (ev) => ev.dentro_da_janela && ev.tem_quorum;
+
+function pintarSalasAbertas(eventos) {
+  const caixa = $('salas-abertas');
+  caixa.textContent = '';
+  const abertas = eventos.filter((e) => e.publicado && salaAberta(e));
+
+  $('salas-vazias').classList.toggle('escondido', abertas.length > 0);
+  caixa.classList.toggle('escondido', abertas.length === 0);
+
+  for (const ev of abertas) {
+    const linha = document.createElement('div');
+    linha.className = 'linha-sala';
+
+    const esq = document.createElement('div');
+    esq.style.flexGrow = '1';
+    const nome = document.createElement('div');
+    nome.style.fontWeight = '600';
+    nome.textContent = ev.nome;
+    const onde = document.createElement('div');
+    onde.style.fontSize = '12px';
+    onde.style.color = 'var(--papel40)';
+    onde.textContent = `${BAIRROS[ev.bairro] ?? ev.bairro} · fecha ${fmt.format(
+      new Date(new Date(ev.termina_em ?? ev.comeca_em).getTime() + ev.sala_fecha_horas * 3600e3)
+    )}`;
+    esq.append(nome, onde);
+
+    const dir = document.createElement('div');
+    dir.style.textAlign = 'right';
+    const n = document.createElement('div');
+    n.style.fontWeight = '700';
+    // ⚠️ Os DOIS números, sempre. Mostrar só "confirmados" faria o
+    // curador jurar que a sala está povoada enquanto o feed dela está
+    // vazio por moderação ou modo discreto.
+    n.textContent = `${ev.visiveis} / ${ev.confirmados}`;
+    const rot = document.createElement('div');
+    rot.style.fontSize = '11px';
+    rot.style.color = 'var(--papel40)';
+    rot.textContent = 'visíveis / confirmados';
+    dir.append(n, rot);
+
+    linha.append(esq, dir);
+    caixa.appendChild(linha);
+  }
+}
+
 async function carregarEventos() {
-  const { data, error } = await sb.from('events').select('*').order('comeca_em', { ascending: false });
+  // Pela RPC, e não mais por `from('events')`: a tabela não tem como
+  // dizer quantas pessoas confirmaram -- `event_attendance` não é
+  // legível pelo painel, e é certo que não seja (a linha diz onde uma
+  // pessoa específica vai estar). O agregado vem pronto do servidor.
+  const { data: resp, error } = await sb.rpc('painel_eventos');
+  const data = resp?.ok ? resp.eventos : null;
   const corpo = $('lista');
   corpo.textContent = '';
 
-  if (error) {
-    $('lista-vazia').textContent = 'Não foi possível carregar. Recarrega a página.';
+  if (error || !resp?.ok) {
+    $('lista-vazia').textContent = resp && !resp.ok
+      ? 'Esta conta não tem acesso aos rolês.'
+      : 'Não foi possível carregar. Recarrega a página.';
     $('lista-vazia').classList.remove('escondido');
     return;
   }
+
+  pintarSalasAbertas(data ?? []);
 
   $('lista-vazia').classList.toggle('escondido', (data ?? []).length > 0);
 
@@ -124,6 +226,45 @@ async function carregarEventos() {
     tr.appendChild(td(ev.nome));
     tr.appendChild(td(fmt.format(new Date(ev.comeca_em))));
     tr.appendChild(td(`${ev.local_nome} · ${BAIRROS[ev.bairro] ?? ev.bairro}`));
+
+    // Confirmados, e quantos deles o feed consegue mostrar.
+    const tdGente = document.createElement('td');
+    tdGente.textContent = `${ev.confirmados}`;
+    if (ev.min_confirmados > 0) {
+      const meta = document.createElement('span');
+      meta.style.color = 'var(--papel40)';
+      meta.textContent = ` / min ${ev.min_confirmados}`;
+      tdGente.appendChild(meta);
+    }
+    if (ev.visiveis !== ev.confirmados) {
+      const dif = document.createElement('div');
+      dif.style.fontSize = '12px';
+      dif.style.color = 'var(--aviso)';
+      dif.textContent = `${ev.visiveis} visíveis`;
+      tdGente.appendChild(dif);
+    }
+    tr.appendChild(tdGente);
+
+    // Estado da sala. Janela e quórum são condições separadas, e a
+    // distinção importa: "fora da janela" espera o relógio, "sem quórum"
+    // espera gente. Um selo só para as duas esconderia o que fazer.
+    const tdSala = document.createElement('td');
+    const seloSala = document.createElement('span');
+    if (!ev.publicado) {
+      seloSala.className = 'selo selo-fora';
+      seloSala.textContent = '—';
+    } else if (!ev.dentro_da_janela) {
+      seloSala.className = 'selo selo-fora';
+      seloSala.textContent = 'fora da janela';
+    } else if (!ev.tem_quorum) {
+      seloSala.className = 'selo selo-quorum';
+      seloSala.textContent = 'sem quórum';
+    } else {
+      seloSala.className = 'selo selo-aberta';
+      seloSala.textContent = 'aberta';
+    }
+    tdSala.appendChild(seloSala);
+    tr.appendChild(tdSala);
 
     const tdEstado = document.createElement('td');
     const selo = document.createElement('span');
@@ -156,6 +297,10 @@ function paraInputLocal(iso) {
 }
 
 function preencherForm(ev) {
+  // Garante a seção certa antes de preencher: o formulário vive em
+  // Rolês, e preencher um formulário escondido é um clique que não faz
+  // nada visível -- o usuário conclui que o botão está quebrado.
+  irPara('roles');
   $('evento-id').value = ev.id;
   $('nome').value = ev.nome ?? '';
   $('bairro').value = ev.bairro ?? 'pinheiros';
@@ -398,12 +543,15 @@ const RAZOES = {
 // As mesmas três que a migração 14 usa para quarentenar na hora.
 const GRAVES = new Set(['menor_de_idade', 'nudez_sexual', 'violencia']);
 
-function trocarAba(qual) {
-  const emRevisao = qual === 'revisao';
-  $('aba-eventos').classList.toggle('ativa', !emRevisao);
-  $('aba-revisao').classList.toggle('ativa', emRevisao);
-  $('painel-eventos').classList.toggle('escondido', emRevisao);
-  $('painel-revisao').classList.toggle('escondido', !emRevisao);
+const SECOES = ['visao', 'revisao', 'roles'];
+const PAINEL_DE = { visao: 'painel-visao', revisao: 'painel-revisao', roles: 'painel-eventos' };
+
+function irPara(qual) {
+  for (const s of SECOES) {
+    $('ir-' + s).classList.toggle('ativa', s === qual);
+    $(PAINEL_DE[s]).classList.toggle('escondido', s !== qual);
+  }
+  window.scrollTo({ top: 0 });
 }
 
 function atualizarContador(n) {
@@ -607,8 +755,9 @@ async function carregarFila() {
   }
 }
 
-$('aba-eventos').addEventListener('click', () => trocarAba('eventos'));
-$('aba-revisao').addEventListener('click', () => trocarAba('revisao'));
+for (const s of SECOES) $('ir-' + s).addEventListener('click', () => irPara(s));
+
+$('btn-ver-fila').addEventListener('click', () => irPara('revisao'));
 
 $('form-login').addEventListener('submit', entrar);
 $('form-evento').addEventListener('submit', salvar);
